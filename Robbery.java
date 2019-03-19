@@ -21,6 +21,12 @@ public class Robbery {
 		int[] sizes,
 		int[] worths
 	) {
+		for (int i = 0; i < sizes.length ; i++) {
+			for (int j = 0; j < worths.length; j++) {
+				
+			}
+			
+		}
 		// fill in here, change the return
 		return 0;
 	}
