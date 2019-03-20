@@ -8,14 +8,48 @@
 public class Robbery {
 
 	// Using DP: Get the maximum value with capacity C and n items
+
+	// Need this helper function
+
+
 	public int maximizeRobWorthRecur(
 		int capacity,
 		int[] sizes,
 		int[] worths
 	) {
-		// fill in here, change the return
 
+
+		// fill in here, change the return
+		/*
+		* If my back cant hold anything I have no value
+		* If theres no items no matter size of my bag I will have no value
+		* */
+		//Base Case
+
+		if(capacity == 0 || sizes.length == 0)
+		{
 			return 0;
+		}
+
+
+		// If an item cannot fit in my bag. Bag has reach max capacity remove item
+		if(sizes[sizes.length - 1] > capacity)
+
+			return maximizeRobWorthRecur(capacity,sizes,worths);
+		// If all the sizes less than capacity
+		else return max(worths[worths.length-1] + maximizeRobWorthRecur(capacity-sizes[sizes.length-1],sizes,worths),
+				maximizeRobWorthRecur(capacity,sizes,worths)
+		);
+
+
+
+	}
+
+
+
+	int max(int a, int b)
+	{
+		return (a > b)? a : b;
 	}
 
 	public int maximizeRobWorthBottomUp(
@@ -23,12 +57,10 @@ public class Robbery {
 		int[] sizes,
 		int[] worths
 	) {
-		for (int i = 0; i < sizes.length ; i++) {
-			for (int j = 0; j < worths.length; j++) {
-				
-			}
+
+
 			
-		}
+
 		// fill in here, change the return
 		return 0;
 	}
