@@ -10,35 +10,41 @@ public class Robbery {
 	// Using DP: Get the maximum value with capacity C and n items
 
 	// Need this helper function
-
+int n;
 
 	public int maximizeRobWorthRecur(
 		int capacity,
 		int[] sizes,
-		int[] worths
+		int[] worths,
+		int n
 	) {
 
 
 		// fill in here, change the return
 		/*
-		* If my back cant hold anything I have no value
+		* If my bag cant hold anything I have no value
 		* If theres no items no matter size of my bag I will have no value
 		* */
 		//Base Case
 
-		if(capacity == 0 || sizes.length == 0)
+
+		if(capacity == 0 || n == 0)
 		{
 			return 0;
 		}
 
 
-		// If an item cannot fit in my bag. Bag has reach max capacity remove item
-		if(sizes[sizes.length - 1] > capacity)
 
-			return maximizeRobWorthRecur(capacity,sizes,worths);
+		// If an item cannot fit in my bag. Go to the next item that can fit
+		if(sizes[n- 1] > capacity)
+
+			return maximizeRobWorthRecur(capacity,sizes,worths, n-1);
 		// If all the sizes less than capacity
-		else return max(worths[worths.length-1] + maximizeRobWorthRecur(capacity-sizes[sizes.length-1],sizes,worths),
-				maximizeRobWorthRecur(capacity,sizes,worths)
+		// If item can fit means below capacity that item will be added.
+		// The remaining capacity will be updated and the next size will be checked.
+		// It will find the max of the n-1 item with another item
+		else return max(worths[n-1] + maximizeRobWorthRecur(capacity-sizes[n-1],sizes,worths, n-1),
+				maximizeRobWorthRecur(capacity,sizes,worths, n-1)
 		);
 
 
@@ -46,8 +52,7 @@ public class Robbery {
 	}
 
 
-
-	int max(int a, int b)
+	public int max(int a, int b)
 	{
 		return (a > b)? a : b;
 	}
@@ -55,14 +60,30 @@ public class Robbery {
 	public int maximizeRobWorthBottomUp(
 		int capacity,
 		int[] sizes,
-		int[] worths
+		int[] worths,
+		int n
 	) {
+		int i,j;
+		//Give correct size of table
+		int[][] DPTable = new int[n+1][capacity+1];
+		for ( i = 0; i < n; i++) {
+			for (j = 0; j < capacity ; j++) {
+
+				if( i == 0 || j == 0)
+					DPTable[i][j] = 0;
+				else if (sizes[i-1] <= j)
+					DPTable[i][j] = max(worths[i-1] + DPTable[i-1][j-sizes[i-1]],DPTable[i-1][j]);
+				else
+					DPTable[i][j] = DPTable[i-1][j];
 
 
+			}
+			
+		}
 			
 
 		// fill in here, change the return
-		return 0;
+		return DPTable[n][capacity];
 	}
 
 /**
@@ -80,11 +101,13 @@ public class Robbery {
 		int bagCapacity = 40;
 		int[] itemSizes = {2, 25, 6, 13, 1, 15, 8, 5, 17, 4};
 		int[] itemWorths = {35, 120, 900, 344, 29, 64, 67, 95, 33, 10};
+		int n = itemSizes.length;
 
-		int maxWorthRecur = r.maximizeRobWorthRecur(bagCapacity, itemSizes, itemWorths);
+		int maxWorthRecur = r.maximizeRobWorthRecur(bagCapacity, itemSizes, itemWorths,n);
 		System.out.println("Max worth of the bag: " + maxWorthRecur);
-		int maxWorthBottomUp = r.maximizeRobWorthBottomUp(bagCapacity, itemSizes, itemWorths);
+		int maxWorthBottomUp = r.maximizeRobWorthBottomUp(bagCapacity, itemSizes, itemWorths,n);
 		System.out.println("Max worth of the bag: " + maxWorthBottomUp);
+
 
 		// Bonus: Fill in the helper method takeRobInventory that could help you
 		//figure out which items go into the bag that make it max worth. Feel free
